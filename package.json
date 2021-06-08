@@ -1,0 +1,52 @@
+{
+	"name": "fig",
+	"displayName": "fig",
+	"description": "",
+	"version": "0.0.2",
+	"engines": {
+		"vscode": "^1.51.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"publisher": "withfig",
+	"repository": "https://github.com/withfig/vscode",
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "fig.helloWorld",
+				"title": "Hello World"
+			}
+		]
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "node ./test/runTest.js",
+		"package": "vsce package",
+		"build": "vsce package && code --install-extension fig-0.0.1.vsix"
+	},
+	"fig": {
+		"build": {
+			"description": "Build extension and install in VSCode"
+		},
+		"package": {
+			"description": "Package extension as .vsix file"
+		}
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.51.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.0",
+		"@types/node": "^12.11.7",
+		"eslint": "^7.9.0",
+		"glob": "^7.1.6",
+		"mocha": "^8.1.3",
+		"typescript": "^4.0.2",
+		"vscode-test": "^1.4.0"
+	}
+}

@@ -15,14 +15,6 @@
 	"publisher": "withfig",
 	"repository": "https://github.com/withfig/vscode",
 	"main": "./extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "fig.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
 	"scripts": {
 		"lint": "eslint .",
 		"pretest": "npm run lint",

@@ -4,29 +4,44 @@ const cp = require('child_process')
 let runCommand = function (command) {
 	cp.exec(command, (err, stdout, stderr) => {
 		if (err) {
-			console.log('error: ' + err);
+			logError(err);
 		}
 	});
 }
 
+// fig.log is an internal setting as it's intended for developers only, this means it won't show up
+// in the settings UI/editor. Add `"fig.log": true` to your settings.json and reload the window to
+// enable logging.
+let shouldLog = vscode.workspace.getConfiguration().get('fig.log') === true;
+
+function log(...args) {
+	if (shouldLog) {
+		console.log(`fig: ${args[0]}`, args.slice(1));
+	}
+}
+
+function logError(message) {
+	console.error(`fig: ${message}`);
+}
+
 function activate(context) {
 	try {
-		console.log("Terminals: " + vscode.window.terminals.length);
+		log("Terminals: " + vscode.window.terminals.length);
 
 		try {
-			console.log(vscode.window.activeTerminal.name)
+			log(vscode.window.activeTerminal.name)
 			vscode.window.activeTerminal.processId.then((processId) => {
 				if (processId) {
 					runCommand('fig bg:vscode code:' + processId)
 				}
 			})
 		} catch (e) {
-			console.log("Fig integration: " + e)
+			log("Fig integration: " + e)
 		}
 
 		vscode.window.onDidChangeWindowState(event => {
-			console.log("onDidChangeWindowState", event)
-			console.log(vscode.window.activeTerminal, vscode.window.activeTextEditor, vscode.context)
+			log("onDidChangeWindowState", event)
+			log(vscode.window.activeTerminal, vscode.window.activeTextEditor, vscode.context)
 			if (!state.focused) {
 				return
 			}
@@ -39,8 +54,8 @@ function activate(context) {
 
 		})
 		vscode.window.onDidOpenTerminal(terminal => {
-			console.log("Terminal opened. Total count: " + vscode.window.terminals.length);
-			console.log("terminal", terminal)
+			log("Terminal opened. Total count: " + vscode.window.terminals.length);
+			log("terminal", terminal)
 			terminal.processId.then((processId) => {
 				if (processId) {
 					runCommand('fig bg:vscode code:' + processId)
@@ -49,8 +64,8 @@ function activate(context) {
 		});
 
 		vscode.window.onDidCloseTerminal(terminal => {
-			console.log("Terminal closed. Total count: " + vscode.window.terminals.length);
-			console.log("terminal", terminal)
+			log("Terminal closed. Total count: " + vscode.window.terminals.length);
+			log("terminal", terminal)
 
 			vscode.window.activeTerminal.processId.then((processId) => {
 				if (processId) {
@@ -60,26 +75,26 @@ function activate(context) {
 		});
 
 		vscode.window.onDidChangeActiveTerminal(terminal => {
-			console.log(`Active terminal changed, name=${terminal ? terminal.name : 'undefined'}`);
+			log(`Active terminal changed, name=${terminal ? terminal.name : 'undefined'}`);
 			terminal.processId.then((processId) => {
 				if (processId) {
 					runCommand('fig bg:vscode code:' + processId)
 				}
 			})
-			console.log(vscode.window.activeTerminal, vscode.window.terminals, vscode.window.terminals.indexOf(vscode.window.activeTerminal))
+			log(vscode.window.activeTerminal, vscode.window.terminals, vscode.window.terminals.indexOf(vscode.window.activeTerminal))
 		});
 
 		vscode.window.onDidChangeActiveTextEditor(editor => {
-			console.log(`Active texteditor changed`);
+			log(`Active texteditor changed`);
 			vscode.window.activeTerminal.processId.then((processId) => {
 				if (processId) {
 					runCommand('fig bg:vscode code:' + processId)
 				}
 			})
-			console.log(vscode.window.activeTerminal.name)
+			log(vscode.window.activeTerminal.name)
 		})
 	} catch (e) {
-		console.log("Fig integration: " + e)
+		logError(e)
 	}
 }
 exports.activate = activate;

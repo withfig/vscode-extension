@@ -42,9 +42,6 @@ function activate(context) {
 		vscode.window.onDidChangeWindowState(event => {
 			log("onDidChangeWindowState", event)
 			log(vscode.window.activeTerminal, vscode.window.activeTextEditor, vscode.context)
-			if (!state.focused) {
-				return
-			}
 
 			vscode.window.activeTerminal.processId.then((processId) => {
 				if (processId) {

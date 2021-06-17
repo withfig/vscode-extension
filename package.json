@@ -1,8 +1,9 @@
 {
 	"name": "fig",
-	"displayName": "fig",
-	"description": "",
+	"displayName": "Fig",
+	"description": "Companion extension for Fig to help integrate with VS Code",
 	"version": "0.0.2",
+	"icon": "images/icon.png",
 	"engines": {
 		"vscode": "^1.51.0"
 	},
@@ -13,7 +14,7 @@
 		"*"
 	],
 	"publisher": "withfig",
-	"repository": "https://github.com/withfig/vscode",
+	"repository": "https://github.com/withfig/vscode-extension",
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [

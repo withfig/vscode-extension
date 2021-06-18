@@ -21,7 +21,7 @@
 		"pretest": "npm run lint",
 		"test": "node ./test/runTest.js",
 		"package": "vsce package",
-		"build": "vsce package && code --install-extension fig-0.0.1.vsix"
+		"build": "vsce package && code --install-extension fig-0.0.2.vsix"
 	},
 	"fig": {
 		"build": {

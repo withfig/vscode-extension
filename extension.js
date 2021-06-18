@@ -24,72 +24,48 @@ function logError(message) {
 	console.error(`fig: ${message}`);
 }
 
+function updateActiveTerminal(terminal) {
+	let activeTerminal = terminal || vscode.window.activeTerminal
+
+	if (!activeTerminal) {
+		noActiveTerminals()
+		return
+	}
+	activeTerminal.processId.then((processId) => {
+		if (processId) {
+			runCommand('fig bg:vscode code:' + processId)
+		}
+	})
+}
+
+function noActiveTerminals() {
+	runCommand('fig bg:vscode-no-active-terminals')
+}
+
+
 function activate(context) {
 	try {
-		log("Terminals: " + vscode.window.terminals.length);
+		updateActiveTerminal()
 
-		try {
-			log(vscode.window.activeTerminal.name)
-			vscode.window.activeTerminal.processId.then((processId) => {
-				if (processId) {
-					runCommand('fig bg:vscode code:' + processId)
-				}
-			})
-		} catch (e) {
-			log("Fig integration: " + e)
-		}
-
-		vscode.window.onDidChangeWindowState(event => {
-			log("onDidChangeWindowState", event)
-			log(vscode.window.activeTerminal, vscode.window.activeTextEditor, vscode.context)
-
-			vscode.window.activeTerminal.processId.then((processId) => {
-				if (processId) {
-					runCommand('fig bg:vscode code:' + processId)
-				}
-			})
-
-		})
 		vscode.window.onDidOpenTerminal(terminal => {
 			log("Terminal opened. Total count: " + vscode.window.terminals.length);
-			log("terminal", terminal)
-			terminal.processId.then((processId) => {
-				if (processId) {
-					runCommand('fig bg:vscode code:' + processId)
-				}
-			})
 		});
 
 		vscode.window.onDidCloseTerminal(terminal => {
 			log("Terminal closed. Total count: " + vscode.window.terminals.length);
-			log("terminal", terminal)
 
-			vscode.window.activeTerminal.processId.then((processId) => {
-				if (processId) {
-					runCommand('fig bg:vscode code:' + processId)
-				}
-			})
+			if (vscode.window.terminals.length == 0) {
+				noActiveTerminals()
+			} else {
+				updateActiveTerminal()
+			}
 		});
 
 		vscode.window.onDidChangeActiveTerminal(terminal => {
-			log(`Active terminal changed, name=${terminal ? terminal.name : 'undefined'}`);
-			terminal.processId.then((processId) => {
-				if (processId) {
-					runCommand('fig bg:vscode code:' + processId)
-				}
-			})
-			log(vscode.window.activeTerminal, vscode.window.terminals, vscode.window.terminals.indexOf(vscode.window.activeTerminal))
+			log(`Active terminal changed`);
+			updateActiveTerminal(terminal)
 		});
 
-		vscode.window.onDidChangeActiveTextEditor(editor => {
-			log(`Active texteditor changed`);
-			vscode.window.activeTerminal.processId.then((processId) => {
-				if (processId) {
-					runCommand('fig bg:vscode code:' + processId)
-				}
-			})
-			log(vscode.window.activeTerminal.name)
-		})
 	} catch (e) {
 		logError(e)
 	}

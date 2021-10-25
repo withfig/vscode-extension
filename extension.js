@@ -9,10 +9,17 @@ let runCommand = function (command) {
 	});
 }
 
+let config = vscode.workspace.getConfiguration()
 // fig.log is an internal setting as it's intended for developers only, this means it won't show up
 // in the settings UI/editor. Add `"fig.log": true` to your settings.json and reload the window to
 // enable logging.
-let shouldLog = vscode.workspace.getConfiguration().get('fig.log') === true;
+let shouldLog = config.get('fig.log') === true;
+
+
+// Ensure that any VSCode terminal session has FIG_NEW_SESSION set as an environment variable
+let osxEnv = config.get("terminal.integrated.env.osx")
+osxEnv["FIG_NEW_SESSION"] = "1"
+config.update("terminal.integrated.env.osx", osxEnv, true)
 
 function log(...args) {
 	if (shouldLog) {

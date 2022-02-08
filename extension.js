@@ -15,11 +15,8 @@ let config = vscode.workspace.getConfiguration()
 // enable logging.
 let shouldLog = config.get('fig.log') === true;
 
-
-// Ensure that any VSCode terminal session has FIG_NEW_SESSION set as an environment variable
-let osxEnv = config.get("terminal.integrated.env.osx")
-osxEnv["FIG_NEW_SESSION"] = "1"
-config.update("terminal.integrated.env.osx", osxEnv, true)
+// Update shell to use fig
+runCommand('sh -c "./scripts/integration-fig.sh"');
 
 function log(...args) {
 	if (shouldLog) {
